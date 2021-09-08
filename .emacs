@@ -12,6 +12,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(show-paren-mode 1)
 (setq inferior-lisp-program "~/nyquist/ny")
 (setq gc-cons-threshold 10000000)
 (require 'package)
@@ -23,6 +24,7 @@
 
 (add-to-list 'exec-path "~/.local/bin")
 (add-to-list 'load-path "~/lisp")
+(load "smartparens-config")
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (helm-mode 1)
