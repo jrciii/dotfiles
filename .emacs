@@ -9,11 +9,39 @@
 (defvar org-map-continue-from)
 (defvar lsp-completion-provider)
 (defvar lsp-prefer-flymake)
+(defalias 'yes-or-no-p 'y-or-n-p)
+(defvar my-family)
+(setq my-family '(Jibba Wife Ada Evelyn Rusty Beatrice))
+(defun new-daily-log-entry ()
+  "Add a new daily log entry."
+  (interactive)
+  (let ((food-sheet "   | Food    | Calories |
+   |---------+----------|
+   |         |          |
+   |---------+----------|
+   | Total   |          |
+   #+TBLFM: @>$2=vsum(@2..@-1)"))
+    (org-insert-heading)
+    (org-time-stamp nil)
+    (cl-loop for family-member in my-family
+	     do
+	     (newline)
+	     (insert "** ")
+	     (insert (symbol-name family-member))
+	     (newline)
+	     (insert "*** Food")
+	     (newline)
+	     (insert food-sheet))))
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; Replace "sbcl" with the path to your implementation
+(setq inferior-lisp-program "sbcl")
+;; (require 'htmlize)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (show-paren-mode 1)
-(setq inferior-lisp-program "~/nyquist/ny")
+;(setq inferior-lisp-program "~/nyquist/ny")
+;; (setq inferior-lisp-program "sbcl")
 (setq gc-cons-threshold 10000000)
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -23,8 +51,22 @@
 (package-initialize)
 
 (add-to-list 'exec-path "~/.local/bin")
-(add-to-list 'load-path "~/lisp")
-(load "smartparens-config")
+(add-to-list 'exec-path "/home/chimp/carp-v0.5.3-x86_64-linux/bin")
+(add-to-list 'load-path "/home/chimp/lisp")
+(add-to-list 'load-path "/home/chimp/lisp/carp-emacs")
+(require 'carp-mode)
+(require 'inf-carp-mode)
+
+;; Use carp-mode for .carp files
+(add-to-list 'auto-mode-alist '("\\.carp\\'" . carp-mode))
+
+(require 'carp-flycheck)
+
+(add-hook 'carp-mode-hook
+          (lambda ()
+            (flycheck-mode 1)))
+
+(load "smartparens-conf")
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (helm-mode 1)
@@ -39,6 +81,11 @@
 (setq epa-pinentry-mode 'loopback)
 (display-time)
 (setq org-babel-shell-command "bash")
+(add-to-list 'org-src-lang-modes '("racket" . scheme))
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (racket . t)))
 ;(add-hook 'exwm-mode-hook
 ;          (lambda () (local-set-key (kbd "C-c C-l") 'exwm-input-grab-keyboard)))
 
@@ -122,7 +169,12 @@
 ;(exwm-config-default)
 
 (load-theme 'tsdh-dark)
-
+(require 'sublimity)
+(require 'sublimity-attractive)
+(sublimity-mode 1)
+(sublimity-attractive-hide-bars)
+(sublimity-attractive-hide-vertical-border)
+(set-face-attribute 'fringe nil :background nil)
 (defun dup-disp ()
   "Duplicate my display on HDMI."
   (interactive)
@@ -242,17 +294,25 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
+ '(bmkp-last-as-first-bookmark-file "/home/chimp/.emacs.d/bookmarks")
  '(helm-completion-style 'emacs)
  '(org-agenda-files
    '("~/org/finra.org" "~/org/lucidadept.org" "~/org/skills/piano.org" "~/org/skills/guitar.org" "~/org/Jibba Todo.org"))
  '(package-selected-packages
-   '(geiser-racket slime smartparens geiser-guile geiser-mit lsp-ui lsp-metals lsp-mode sbt-mode scala-mode elpy use-package ednc swiper-helm helm-projectile helm unfill ## speed-type markdown-mode projectile magit soundcloud emms-soundcloud emms spray circe haskell-mode dmenu exwm)))
+   '(sketch-mode csv-mode git-link transpose-frame htmlize ein sublimity geiser-chicken geiser-racket slime smartparens geiser-guile geiser-mit lsp-ui lsp-metals lsp-mode sbt-mode scala-mode elpy use-package ednc swiper-helm helm-projectile helm unfill ## speed-type markdown-mode projectile magit soundcloud emms-soundcloud emms spray circe haskell-mode dmenu exwm))
+ '(spray-ramp 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(font-lock-builtin-face ((t (:foreground "gold1"))))
+ '(font-lock-comment-face ((t (:foreground "IndianRed3"))))
+ '(font-lock-function-name-face ((t (:foreground "gold2"))))
+ '(font-lock-keyword-face ((t (:foreground "SkyBlue3" :weight bold))))
+ '(font-lock-string-face ((t (:foreground "#bf7af2"))))
+ '(font-lock-type-face ((t (:foreground "#8e7890" :underline t))))
+ '(font-lock-variable-name-face ((t (:foreground "gold3")))))
 
 (provide '.emacs)
 ;;; .emacs ends here
